@@ -8,13 +8,13 @@ class Main(object):
 
     def getLineEndMatch(self, line):
         # Return a match in group(2) if line followed by %>%, %T>%, or +
-        return re.search('(.*?)((?:%T?>%|\+)\s*(#.*)?$|$)', line) 
+        return re.search('(.*?)((?:%T?>%|\+|,)\s*(#.*)?$|$)', line) 
 
     def isBlankLineOrComment(self, line):
         return (re.search('^\s*$', line) or re.search('^\s*#', line)) != None
 
     def removeAssignmentOperator(self, line):
-        return re.search('(?:^.*<-|^)(.*)', line).group(1)
+        return re.search('(?:^.*<-|^)(.*?)(?:->.*$|$)', line).group(1)
 
     @neovim.function('RunFullMagrittrChain')
     def runFullMagrittrChain(self, args):
@@ -49,7 +49,11 @@ class Main(object):
                     chain_to_run.append(match.group(0))
             ln -= 1
 
-        # Reverse the array because we've been appending lines as we move up
+        # Remove any assignment operator on the last line(->)
+        if(args!='full'):
+            chain_to_run[0] = self.removeAssignmentOperator(chain_to_run[0])
+
+        # After dealing with last line, reverse the array because we've been appending lines as we move up
         chain_to_run.reverse()
 
         # Remove all preceding blank lines and comments
