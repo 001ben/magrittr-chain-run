@@ -8,7 +8,7 @@ class Main(object):
 
     def getLineEndMatch(self, line):
         # Return a match in group(2) if line followed by %>%, %T>%, or +
-        return re.search('(.*?)((?:%T?>%|\+|,)\s*(#.*)?$|$)', line) 
+        return re.search('(.*?)((?:%T?>%|\+|&|\||,|\()\s*(#.*)?$|$)', line) 
 
     def isBlankLineOrComment(self, line):
         return (re.search('^\s*$', line) or re.search('^\s*#', line)) != None
@@ -68,5 +68,5 @@ class Main(object):
         command = '\n'.join(chain_to_run) \
             .replace("'", "''")
 
-        self.vim.command("call g:SendCmdToR('%s')"%command)
+        self.vim.command("call g:MySendCmdToR('%s')"%command)
         return
