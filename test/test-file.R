@@ -1,9 +1,11 @@
 library(data.table)
 library(magrittr)
+library(dplyr)
 
 filtered_averages <- mtcars %>%
-  data.table %>%
-  .[wt>=2 & vs==0] %>%
+  as_tibble %>%
+  filter(wt>=2 & vs==0
+         ) %>%
   .[, lapply(.SD, mean), .SDcols=names(.)] # Yay test passed
 
 longer_list <- mtcars %>%
